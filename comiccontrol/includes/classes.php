@@ -1,12 +1,14 @@
 <?php
 
-//classes.php - base classes - called in initialize.php
+// Base classes for pages
 
-//CC_Site - holds overall site options
+// CC_Site - holds overall site options
 class CC_Site{
 	
+	public $tableprefix;
 	public $timezone; //site timezone
 	public $sitetitle; //overall site title
+	public $commentname;
 	public $commentuser; //username for comments service
 	public $root; //the root URL without any extra paths
 	public $relativepath; //a relative path is the CC install is not at in base directory
@@ -14,6 +16,7 @@ class CC_Site{
 	public $dateformat; //format string for dates
 	public $timeformat; //format string for times
 	public $version; //version number for CC
+	public $language;
 	public $user_language; //overall language for site
 	public $jquery; //URL for jquery inclusion
 	public $hammerjs; //URL for hammer.js inclusion
@@ -27,25 +30,29 @@ class CC_Site{
 		global $tableprefix;
 		
 		$this->tableprefix = $tableprefix;
-		$this->timezone = self::fetchoption("timezone");
-		$this->sitetitle = self::fetchoption("sitetitle");
-		$this->commentname = self::fetchoption("commentname");
-		$this->root = self::setProtocol(self::fetchoption("root"));
-		$this->relativepath = self::fetchoption("relativepath");
-		$this->ccroot = self::fetchoption("ccroot");
-		$this->dateformat = self::fetchoption("dateformat");
-		$this->timeformat = self::fetchoption("timeformat");
-		$this->version = self::fetchoption("version");
-		$this->language = self::fetchoption("language");
-		$this->jquery = self::fetchoption("jquery");
-		$this->hammerjs = self::fetchoption("hammerjs");
-		$this->description = self::fetchoption("description");
-		$this->updatechecked = self::fetchoption("updatechecked");
-		$this->newestversion = self::fetchoption("newestversion");
-		$this->comments = self::fetchoption("comments");
+		$this->timezone = self::fetchoption('timezone');
+		$this->sitetitle = self::fetchoption('sitetitle');
+		$this->commentname = self::fetchoption('commentname');
+		$this->root = self::setProtocol(self::fetchoption('root'));
+		$this->relativepath = self::fetchoption('relativepath');
+		$this->ccroot = self::fetchoption('ccroot');
+		$this->dateformat = self::fetchoption('dateformat');
+		$this->timeformat = self::fetchoption('timeformat');
+		$this->version = self::fetchoption('version');
+		$this->language = self::fetchoption('language');
+		$this->jquery = self::fetchoption('jquery');
+		$this->hammerjs = self::fetchoption('hammerjs');
+		$this->description = self::fetchoption('description');
+		$this->updatechecked = self::fetchoption('updatechecked');
+		$this->newestversion = self::fetchoption('newestversion');
+		$this->comments = self::fetchoption('comments');
 
-		if($this->timezone == '') $this->timezone = "America/Chicago";
+		// Use Hiveworks timezone if none is set
+		if($this->timezone == '') {
+			$this->timezone = 'America/Chicago';
+		}
 	}
+	
 	private function fetchoption($option){
 		global $cc;
 		
@@ -54,6 +61,7 @@ class CC_Site{
 		$row = $stmt->fetch();
 		return $row['optionvalue'];
 	}
+	
 	private function setProtocol($url){
 		$baseurl = substr($url,strpos($url,'/'));
 		$newurl = "";
