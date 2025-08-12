@@ -31,6 +31,20 @@ function toSlug($input = '') {
 	return strtolower($input);
 }
 
+// Take a URL and convert it to https if available
+function setProtocol($url) {
+	// Extract //website.com from https://website.com
+	$baseurl = substr($url,strpos($url,'/'));
+
+	// Is SSL enabled?
+	if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443)) {
+		// Return https://website.com
+		return "https:" . $baseurl;
+	}
+	// Return http://website.com
+	return "http:" . $baseurl;
+}
+
 // With a URL, download the file and return the contents
 // as a string
 function get_info($url) {

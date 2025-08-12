@@ -33,7 +33,7 @@ class CC_Site{
 		$this->timezone = self::fetchoption('timezone');
 		$this->sitetitle = self::fetchoption('sitetitle');
 		$this->commentname = self::fetchoption('commentname');
-		$this->root = self::setProtocol(self::fetchoption('root'));
+		$this->root = setProtocol(self::fetchoption('root'));
 		$this->relativepath = self::fetchoption('relativepath');
 		$this->ccroot = self::fetchoption('ccroot');
 		$this->dateformat = self::fetchoption('dateformat');
@@ -61,19 +61,7 @@ class CC_Site{
 		$row = $stmt->fetch();
 		return $row['optionvalue'];
 	}
-	
-	private function setProtocol($url){
-		$baseurl = substr($url,strpos($url,'/'));
-		$newurl = "";
 
-		if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
-			$newurl = "https:" . $baseurl;
-		}else{
-			$newurl = "http:" . $baseurl;
-		}
-		return $newurl;
-	}
-	
 }
 
 //CC_User - holds onto user information, especially authorization level
