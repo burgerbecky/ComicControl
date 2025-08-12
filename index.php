@@ -1,17 +1,17 @@
 <?php
-
-
 /* 
 COMICCONTROL
-Version 4.2.9
-7/5/2021
+Version 5.0.0
+8/9/2025
 Built by Erin Burt with help from others.
 Copyright 2012-2021 Erin Burt.
-See comicctrl.com/thanks for contributors and included third-party MIT-licensed packages.
-See github.com/erintheunready/ComicControl for current source and development branches.
+
+Additional changes Copyright 2025 Rebecca Ann Heineman
+See comicctrl.com/thanks for contributors and included third-party MIT-licensed packages for original version
+See github.com/burgerbecky/ComicControl for current source and development branches.
 */
 
-//start the output buffering
+// Start the output buffering
 ob_start();
 error_reporting(E_ALL & ~E_NOTICE);
 header('X-Frame-Options: sameorigin');
@@ -21,7 +21,7 @@ require_once('comiccontrol/includes/dbconfig.php');
 require_once('comiccontrol/includes/initialize.php');
 
 //build the page
-$ccpage = new CC_Page("$_SERVER[REQUEST_URI]");
+$ccpage = new CC_Page($_SERVER['REQUEST_URI']);
 
 //include admin language if logged in
 if($ccuser->authlevel > 0){
@@ -39,7 +39,6 @@ if(file_exists('custom.php')) require_once('custom.php');
 
 //include template and build module
 require_once('templates/' . $ccpage->template);
-
 
 //close out the contents
 $contents = ob_get_contents();

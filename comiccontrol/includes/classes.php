@@ -459,10 +459,10 @@ class CC_Module{
 		//output previous/next buttons for flipping through pages
 		echo '<div class="cc-prevnext">';
 		if($page > 1){
-			echo '<a href="' . $ccsite->root . $ccsite->relativeroot . $this->slug . '/' . $pagedir . '/' . ($page-1) . '">' . $user_lang['navprev'] . '</a>';
+			echo '<a href="' . $ccsite->root . $this->slug . '/' . $pagedir . '/' . ($page-1) . '">' . $user_lang['navprev'] . '</a>';
 		}
 		if($page < $numpages){
-			echo '<a href="' . $ccsite->root . $ccsite->relativeroot . $this->slug . '/' . $pagedir . '/' . ($page+1) . '">' . $user_lang['navnext'] . '</a>';
+			echo '<a href="' . $ccsite->root . $this->slug . '/' . $pagedir . '/' . ($page+1) . '">' . $user_lang['navnext'] . '</a>';
 		}
 		echo '</div>';
 		
