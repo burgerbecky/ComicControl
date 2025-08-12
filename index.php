@@ -14,10 +14,14 @@ See github.com/burgerbecky/ComicControl for current source and development branc
 // Start the output buffering
 ob_start();
 error_reporting(E_ALL & ~E_NOTICE);
+
+// Output the HTML standard header
 header('X-Frame-Options: sameorigin');
 
-//include main ComicControl scripts
+// Get the database settings
 require_once('comiccontrol/includes/dbconfig.php');
+
+// Init with default subroutines
 require_once('comiccontrol/includes/initialize.php');
 
 //build the page

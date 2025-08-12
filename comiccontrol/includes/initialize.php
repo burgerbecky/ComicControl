@@ -1,56 +1,82 @@
 <?php
-//initialize.php - builds base classes and objects for both front and backend
+// Common subroutines used by backend and main comic engine
 
-//universal functions
-function toSlug($input){
-	$input = str_replace('%20','-',$input);
-	$input = preg_replace('/[^A-Za-z0-9 \-]/', '', $input);
-	$input = trim($input);
-	$input = str_replace(' ','-',$input);
-	$input = strtolower($input);
-	return $input;
-}
-function getSlug($slugnum){
-	
+// Get the slug from the page's slug array
+// 0 Page type
+// 1 Navigation
+// 2 Action
+// 3 Userid
+// 4 Validate 
+function getSlug($slugnum) {
+
 	global $ccpage;
-	
-	return $ccpage->slugarr[$slugnum];
-	
+	return ($ccpage->slugarr[$slugnum] ?? '');
 }
-//get file contents function
-function get_info($url){
-	$curl = curl_init();
-	curl_setopt($curl, CURLOPT_URL, $url);
+
+// Standardize slugs for case and spaces
+function toSlug($input = '') {
+	// URL spaces become dashes
+	$input = str_replace('%20','-',$input);
+
+	// Remove all non-alpha-numeric characters
+	$input = preg_replace('/[^A-Za-z0-9 \-]/','',$input);
+
+	// Remove leading/trailing whitespace
+	$input = trim($input);
+
+	// Spaces become dashes for stragglers
+	$input = str_replace(' ','-',$input);
+
+	// Convert the mess to lowercase
+	return strtolower($input);
+}
+
+// With a URL, download the file and return the contents
+// as a string
+function get_info($url) {
+	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+	// Load the URL
 	$output = curl_exec($curl);
 	curl_close($curl);
-	
+
+	// Return the string
 	return $output;
 }
-function get_file($url,$fileloc){
-	$file = fopen($fileloc, 'w');
-	$curl = curl_init();
-	curl_setopt($curl, CURLOPT_URL,$url);
+
+// Download a file from a URL
+function get_file($url,$fileloc) {
+
+	// Open the file and lock it in case of multi-threading
+	$fp = fopen($fileloc, 'w');
+	flock($fp, LOCK_EX);
+
+	// Load the data from the URL
+	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_FAILONERROR, true);
 	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-	curl_setopt($curl, CURLOPT_FILE, $file);
+	curl_setopt($curl, CURLOPT_FILE, $fp);
 	curl_exec($curl);
 	curl_close($curl);
-	fclose($file);
+
+	// Release the file and close
+	flock($fp, LOCK_UN);
+	fclose($fp);
 }
 
-//initialize the lang array
+// Init the language array
 $lang = array();
 
-//include the classes
+// Include the classes (The actual work)
 require_once('classes.php');
 
-//create objects
+// Create objects
 $ccsite = new CC_Site();
 $ccuser = new CC_User();
 date_default_timezone_set($ccsite->timezone);
 
-//quick access URL string
+// Quick access URL string
 $siteurl = $ccsite->root;
 $ccurl = $ccsite->root.$ccsite->ccroot;
 
@@ -60,9 +86,11 @@ function getModuleOption($optionname){
 	
 	return $ccpage->module->options[$optionname];
 }
+
 function buildButton($classes,$link,$text){
 	echo '<a class="cc-btn f-c ' . $classes . '" href="' . $link . '">' . $text . '</a>';
 }
+
 function quickLinks($links){
 	echo '<div id="context-links">';
 	foreach($links as $link){
